@@ -20,6 +20,7 @@ def has_invalid_codes(fmt):
 @app.route("/", methods=["GET", "POST"])
 def index():
     result = ""
+    fmt = ""
     if request.method == "POST":
         fmt = request.form["format"]
         now = datetime.now()
@@ -47,7 +48,7 @@ def index():
             except Exception as e:
                 result = f"Error: {str(e)}"
 
-    return render_template("index.html", result=result)
+    return render_template("index.html", result=result, fmt=fmt)
 
 
 if __name__ == "__main__":
