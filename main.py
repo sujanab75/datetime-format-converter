@@ -24,16 +24,28 @@ def index():
         fmt = request.form["format"]
         now = datetime.now()
 
-        try:
-            example = now.strftime(fmt)
-            result = f"Example: {example}"
-
-        except Exception as e:
-            # Check for invalid format codes
-            invalid = has_invalid_codes(fmt)
-            if invalid:
-                result = f"Invalid format code(s): {', '.join(invalid)}"
-            result = f"Error: {str(e)}"
+        # Check for invalid format codes first
+        invalid = has_invalid_codes(fmt)
+        if invalid:
+            # Try to show example with valid codes only
+            valid_codes = set(re.findall(r'%[a-zA-Z%]', fmt)) & VALID_CODES
+            if valid_codes:
+                # Create a format string with only valid codes for demonstration
+                try:
+                    # Show what valid codes would produce
+                    sample_valid_fmt = ' '.join(valid_codes)
+                    valid_example = now.strftime(sample_valid_fmt)
+                    result = f"Invalid format code(s): {', '.join(sorted(invalid))}. Valid codes in your input would produce: {valid_example}"
+                except:
+                    result = f"Invalid format code(s): {', '.join(sorted(invalid))}"
+            else:
+                result = f"Invalid format code(s): {', '.join(sorted(invalid))}"
+        else:
+            try:
+                example = now.strftime(fmt)
+                result = f"Example: {example}"
+            except Exception as e:
+                result = f"Error: {str(e)}"
 
     return render_template("index.html", result=result)
 
