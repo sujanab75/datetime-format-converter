@@ -4,12 +4,10 @@ import re
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
-
 # Set of valid strftime format codes
 VALID_CODES = {'%a', '%A', '%w', '%d', '%b', '%B', '%m', '%y', '%Y', '%H','%I', '%p', '%M', '%S', '%f', '%z', '%Z', '%j', '%U', '%W','%c', '%x', '%X', '%%'}
 
-
+@app.route("/", methods=["GET", "POST"])
 def index():
   result = ""
   if request.method == "POST":
