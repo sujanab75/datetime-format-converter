@@ -2,12 +2,41 @@
 <html>
 <head>
   <title>DateTime Format Converter</title>
+  <script>
+    function setFromDropdown(value) {
+      document.getElementById('format').value = value;
+      document.getElementById('custom_format').value = '';  // clear custom
+    }
+
+    function setFromCustomInput(value) {
+      document.getElementById('format').value = value;
+      document.getElementById('dropdown').selectedIndex = 0;  // reset dropdown
+    }
+  </script>
 </head>
 <body>
   <h1>Python DateTime Format → Example</h1>
   <form method="POST">
-    <label for="format">Format string:</label><br>
-    <input type="text" id="format" name="format" placeholder="%Y-%m-%d %H:%M"><br><br>
+    <label for="format">Choose a format:</label><br>
+
+    <select id="dropdown" onchange="setFromDropdown(this.value)">
+      <option value="">-- Select a format --</option>
+      <option value="%Y-%m-%d" {% if fmt == "%Y-%m-%d" %}selected{% endif %}>%Y-%m-%d → 2025-06-08</option>
+      <option value="%d/%m/%Y" {% if fmt == "%d/%m/%Y" %}selected{% endif %}>%d/%m/%Y → 08/06/2025</option>
+      <option value="%A, %B %d, %Y" {% if fmt == "%A, %B %d, %Y" %}selected{% endif %}>%A, %B %d, %Y → Sunday, June 08, 2025</option>
+      <option value="%I:%M %p" {% if fmt == "%I:%M %p" %}selected{% endif %}>%I:%M %p → 02:30 PM</option>
+      <option value="%c" {% if fmt == "%c" %}selected{% endif %}>%c → Sun Jun  8 14:30:00 2025</option>
+    </select><br><br>
+
+    <label for="custom_format">Or type your own format:</label><br>
+    <input type="text" id="custom_format" placeholder="Enter format manually"
+           oninput="setFromCustomInput(this.value)" value="{{ fmt if fmt not in [
+         '%Y-%m-%d', '%d/%m/%Y', '%A, %B %d, %Y', '%I:%M %p', '%c'
+       ] else '' }}">
+    
+    <!-- Hidden unified input field -->
+    <input type="hidden" id="format" name="format"><br><br>
+    
     <input type="submit" value="Convert">
   </form>
   <p>{{ result }}</p>
